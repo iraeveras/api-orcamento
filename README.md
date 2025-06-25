@@ -111,3 +111,29 @@ prisma/
 │   └── schema.prisma
 .env
 ```
+### Padrão de Resposta da API
+Sempre no formato:
+```json
+{
+  "data": { /* dados ou array */ },
+  "error": null // ou mensagem de erro
+}
+```
+### Roadmap
+ - Configuração inicial do projeto com TypeScript, Express e Prisma
+ - Autenticação de usuários
+ - Cadastro, edição e exclusão de usuários
+ - Gestão de empresas, equipes e permissões
+ - Documentação Swagger/OpenAPI
+ - Testes unitários automatizados
+ - Deploy em ambiente cloud
+
+### Contribuição
+1. Fork este repositório
+2. Crie uma branch: git checkout -b feature/sua-feature
+3. Commit suas alterações: git commit -m 'feat: sua feature'
+4. Push para sua branch: git push origin feature/sua-feature
+5. Abra um Pull Request
+
+### Licença
+Este projeto está sob a licença MIT.
