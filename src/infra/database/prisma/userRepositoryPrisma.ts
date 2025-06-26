@@ -5,16 +5,16 @@ import { User } from '@/domain/entities/User';
 
 export function userRepositoryPrisma(): IUserRepository {
     return {
-        async create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
+        async create(data) {
             return prisma.user.create({ data });
         },
-        async findById(id: number): Promise<User | null> {
+        async findById(id) {
             return prisma.user.findUnique({ where: { id } });
         },
-        async findByEmail(email: string): Promise<User | null> {
+        async findByEmail(email) {
             return prisma.user.findUnique({ where: { email } });
         },
-        async list(): Promise<User[]> {
+        async list() {
             return prisma.user.findMany();
         },
         async update(id, data) {
