@@ -31,6 +31,34 @@ model User {
   name      String
   email     String   @unique
   password  String
+  roleId Int
+  role Role @relation(fields: [roleId], references: [id])
+  passwordResetToken PasswordResetToken[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  name String
+  level String
+  description String
+  permissions RolePermission[]
+  users User[]
+}
+
+model PasswordResetToken {
+  token     String   @id
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+}
+
+model RolePermission {
+  id Int @id @default(autoincrement())
+  module String
+  actions String[]
+  scope String
+  roleId Int
+  role Role @relation(fields: [roleId], references: [id])
 }
