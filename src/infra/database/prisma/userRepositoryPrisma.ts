@@ -1,11 +1,12 @@
 // FILE: src/infra/database/prisma/userRepositoryPrisma.ts
 import prisma from './client';
+import { Prisma } from '@prisma/client';
 import { IUserRepository } from '@/domain/repositories/userRepository';
 import { User } from '@/domain/entities/User';
 
 export function userRepositoryPrisma(): IUserRepository {
     return {
-        async create(data) {
+        async create(data: Prisma.UserCreateInput) {
             return prisma.user.create({ data });
         },
         async findById(id) {
