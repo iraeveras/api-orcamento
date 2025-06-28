@@ -4,6 +4,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
+import userRoutes from '@/infra/http/routes/userRoutes'
+
 dotenv.config();
 const app = express();
 
@@ -14,6 +16,8 @@ app.use(helmet());
 app.get('/health', (req, res) => {
     res.json({status: 'ok'});
 });
+
+app.use('/users', userRoutes)
 
 
 // Middleware global de erro (após todas as rotas)
