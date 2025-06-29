@@ -76,30 +76,48 @@ model Company {
   tradeName     String
   departments   Department[]
   sectors       Sector[]
+  costCenters   CostCenter[]
   status        String
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 }
 
 model Department {
-  id        Int      @id @default(autoincrement())
-  name      String
-  companyId Int
-  company   Company  @relation(fields: [companyId], references: [id])
-  sectors   Sector[]
-  status    String   @default("active")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int          @id @default(autoincrement())
+  name        String
+  companyId   Int
+  company     Company      @relation(fields: [companyId], references: [id])
+  sectors     Sector[]
+  costCenters CostCenter[]
+  status      String       @default("active")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Sector {
+  id           Int          @id @default(autoincrement())
+  name         String
+  companyId    Int
+  company      Company      @relation(fields: [companyId], references: [id])
+  departmentId Int
+  department   Department   @relation(fields: [departmentId], references: [id])
+  costCenters  CostCenter[]
+  status       String       @default("active")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model CostCenter {
   id           Int        @id @default(autoincrement())
   name         String
+  code         String
+  status       String     @default("active")
   companyId    Int
   company      Company    @relation(fields: [companyId], references: [id])
   departmentId Int
   department   Department @relation(fields: [departmentId], references: [id])
-  status       String     @default("active")
+  sectorId     Int
+  sector       Sector     @relation(fields: [sectorId], references: [id])
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
