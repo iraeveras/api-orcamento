@@ -77,6 +77,7 @@ model Company {
   departments   Department[]
   sectors       Sector[]
   costCenters   CostCenter[]
+  employees     Employee[]
   status        String
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -89,6 +90,7 @@ model Department {
   company     Company      @relation(fields: [companyId], references: [id])
   sectors     Sector[]
   costCenters CostCenter[]
+  employees   Employee[]
   status      String       @default("active")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -102,6 +104,7 @@ model Sector {
   departmentId Int
   department   Department   @relation(fields: [departmentId], references: [id])
   costCenters  CostCenter[]
+  employees    Employee[]
   status       String       @default("active")
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -112,6 +115,25 @@ model CostCenter {
   name         String
   code         String
   status       String     @default("active")
+  companyId    Int
+  company      Company    @relation(fields: [companyId], references: [id])
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+  sectorId     Int
+  sector       Sector     @relation(fields: [sectorId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Employee {
+  id           Int        @id @default(autoincrement())
+  matricula    String
+  name         String
+  admission    DateTime
+  position     String
+  salary       Float
+  dangerPay    Boolean    @default(false)
+  status       String     @default("Ativo")
   companyId    Int
   company      Company    @relation(fields: [companyId], references: [id])
   departmentId Int
