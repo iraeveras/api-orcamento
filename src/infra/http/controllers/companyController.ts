@@ -14,7 +14,7 @@ export async function createCompany(req: Request, res: Response): Promise<void> 
     try {
         const context = {
             userId: req.user?.id || 0,
-            ipAddress: req.ip,
+            ipAddress: req.ip || '',
         };
         const useCase = createCompanyUseCase(companyRepository, auditlogRepository);
         const company = await useCase.execute(req.body, context);
@@ -28,7 +28,7 @@ export async function updateCompany(req: Request, res: Response): Promise<void> 
     try {
         const context = {
             userId: req.user?.id || 0,
-            ipAddress: req.ip,
+            ipAddress: req.ip || '',
         };
         const useCase = updateCompanyUseCase(companyRepository, auditlogRepository);
         const { id } = req.params;
@@ -53,7 +53,7 @@ export async function deleteCompany(req: Request, res: Response): Promise<void> 
     try {
         const context = {
             userId: req.user?.id || 0,
-            ipAddress: req.ip,
+            ipAddress: req.ip || '',
         };
         const useCase = deleteCompanyUseCase(companyRepository, auditlogRepository);
         const { id } = req.params;
