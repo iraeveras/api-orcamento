@@ -11,7 +11,7 @@ const router = Router();
 
 router.post('/login', validate(loginSchema), asyncHandler(login));
 router.post('/forgot-password', validate(forgotPasswordSchema), asyncHandler(forgotPassword));
-router.post('reset-password', validate(resetPasswordSchema), asyncHandler(resetPassword));
+router.post('/reset-password', validate(resetPasswordSchema), asyncHandler(resetPassword));
 
 router.post('/', authenticate, authorize('users', ['write']), validate(createUserSchema), asyncHandler(createUser));
 router.get('/', authenticate, authorize('users', ['read']), asyncHandler(listUsers));
