@@ -57,7 +57,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
     try {
         const context = {
             userId: req.user?.id || 0,
-            ipAddress: req.ip,
+            ipAddress: req.ip || '',
         }
         const userData = { ...req.body, password: await bcrypt.hash(req.body.password, SALT_ROUNDS) };
         const useCase = createUserUseCase(userRepository, auditlogRepository);
@@ -90,7 +90,7 @@ export async function updateUser(req: Request, res: Response): Promise<void> {
     try {
         const context = {
             userId: req.user?.id || 0,
-            ipAddress: req.ip,
+            ipAddress: req.ip || '',
         };
 
         const { password, ...updateData } = req.body;
@@ -116,7 +116,7 @@ export async function deleteUser(req: Request, res: Response): Promise<void> {
     try {
         const context = {
             userId: req.user?.id,
-            ipAddress: req.ip,
+            ipAddress: req.ip || '',
         }
 
         const useCase = deleteUserUseCase(userRepository, auditlogRepository);
