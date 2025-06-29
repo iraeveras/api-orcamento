@@ -68,3 +68,24 @@ model RolePermission {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Company {
+  id            Int          @id @default(autoincrement())
+  cnpj          String
+  corporateName String
+  tradeName     String
+  departments   Department[]
+  status        String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Department {
+  id        Int      @id @default(autoincrement())
+  name      String
+  companyId Int
+  company   Company  @relation(fields: [companyId], references: [id])
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
