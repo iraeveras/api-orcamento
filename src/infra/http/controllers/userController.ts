@@ -15,7 +15,7 @@ import { apiResponse } from '@/shared/utils/apiResponse';
 const userRepository = userRepositoryPrisma();
 const auditlogRepository = auditlogRepositoryPrisma();
 const JWT_SECRET = process.env.JWT_SECRET || 'mySuperSecretKey12345!@';
-const SALT_ROUNDS = process.env.SALT_ROUNDS || 10
+const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 10
 
 export async function login(req: Request, res: Response): Promise<void> {
     try {
