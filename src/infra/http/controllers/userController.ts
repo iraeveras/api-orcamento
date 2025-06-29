@@ -147,6 +147,17 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
         await prisma.passwordResetToken.create({
             data: { userId: user.id, token: resetToken, expiresAt: expires }
         });
+
+        // AUDIT LOG
+        await auditlogRepository.log({
+            userId: user.id,
+            action: 'forgot-password',
+            entity: 'User',
+            entityId: String(user.id),
+            newData: { email: user.email },
+            ipAddress: req.ip
+        });
+
         // Envie e-mail para user.email (mock ou integração com serviço de email)
         // ...
         res.status(200).json(apiResponse({ message: 'Se o e-mail estiver cadastrado, será enviado um link de recuperação.' }));
@@ -168,6 +179,18 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
             where: { id: reset.userId },
             data: { password: await bcrypt.hash(password, SALT_ROUNDS) }
         });
+
+        // AUDIT LOG
+        const user = await prisma.user.findUnique({ where: { id: reset.userId } });
+        await auditlogRepository.log({
+            userId: reset.userId,
+            action: 'reset-password',
+            entity: 'User',
+            entityId: String(reset.userId),
+            newData: { email: user?.email },
+            ipAddress: req.ip
+        });
+        
         await prisma.passwordResetToken.delete({ where: { token } });
         res.status(200).json(apiResponse({ message: 'Senha redefinida com sucesso.' }));
     } catch (error) {
