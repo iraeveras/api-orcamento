@@ -126,20 +126,33 @@ model CostCenter {
 }
 
 model Employee {
-  id           Int        @id @default(autoincrement())
-  matricula    String
-  name         String
-  admission    DateTime
-  position     String
-  salary       Float
-  dangerPay    Boolean    @default(false)
-  status       String     @default("Ativo")
-  companyId    Int
-  company      Company    @relation(fields: [companyId], references: [id])
-  departmentId Int
-  department   Department @relation(fields: [departmentId], references: [id])
-  sectorId     Int
-  sector       Sector     @relation(fields: [sectorId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id                 Int                 @id @default(autoincrement())
+  matricula          String
+  name               String
+  admission          DateTime
+  position           String
+  salary             Float
+  dangerPay          Boolean             @default(false)
+  status             String              @default("Ativo")
+  companyId          Int
+  company            Company             @relation(fields: [companyId], references: [id])
+  departmentId       Int
+  department         Department          @relation(fields: [departmentId], references: [id])
+  sectorId           Int
+  sector             Sector              @relation(fields: [sectorId], references: [id])
+  acquisitionPeriods AcquisitionPeriod[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model AcquisitionPeriod {
+  id         Int      @id @default(autoincrement())
+  employeeId Int
+  startDate  DateTime
+  endDate    DateTime
+  year       Int
+  status     String   @default("open")
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

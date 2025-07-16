@@ -10,6 +10,7 @@ import departmentRoutes from '@/infra/http/routes/departmentRoutes';
 import sectorRoutes from '@/infra/http/routes/sectorRoutes';
 import costCenterRoutes from '@/infra/http/routes/costCenterRoutes';
 import employeeRoutes from '@/infra/http/routes/employeeRoutes';
+import acquisitionPeriodRoutes from '@/infra/http/routes/acquisitionPeriodRoutes';
 
 dotenv.config();
 const app = express();
@@ -28,6 +29,7 @@ app.use('/departments', departmentRoutes);
 app.use('/sectors', sectorRoutes);
 app.use('/cost-centers', costCenterRoutes);
 app.use('/employees', employeeRoutes);
+app.use('/acquisition-periods', acquisitionPeriodRoutes);
 
 
 // Middleware global de erro (após todas as rotas)
