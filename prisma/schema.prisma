@@ -34,6 +34,7 @@ model User {
   roleId             Int
   role               Role                 @relation(fields: [roleId], references: [id])
   passwordResetToken PasswordResetToken[]
+  ledTeams           Team[]               @relation("UserLedTeams")
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
 }
@@ -78,6 +79,7 @@ model Company {
   sectors       Sector[]
   costCenters   CostCenter[]
   employees     Employee[]
+  teams         Team[]
   status        String
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -105,9 +107,24 @@ model Sector {
   department   Department   @relation(fields: [departmentId], references: [id])
   costCenters  CostCenter[]
   employees    Employee[]
+  teams        Team[]
   status       String       @default("active")
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+}
+
+model Team {
+  id        Int      @id @default(autoincrement())
+  name      String
+  companyId Int
+  company   Company  @relation(fields: [companyId], references: [id])
+  sectorId  Int
+  sector    Sector   @relation(fields: [sectorId], references: [id])
+  leaderId  Int // FK para Employee (ou User, dependendo da sua estrutura)
+  leader    User     @relation("UserLedTeams", fields: [leaderId], references: [id])
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CostCenter {
