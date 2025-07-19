@@ -31,10 +31,13 @@ model User {
   name               String
   email              String               @unique
   password           String
+  status             String               @default("active")
   roleId             Int
   role               Role                 @relation(fields: [roleId], references: [id])
   passwordResetToken PasswordResetToken[]
   ledTeams           Team[]               @relation("UserLedTeams")
+  companies          UserCompany[]
+  lastLogin          DateTime?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
 }
@@ -70,19 +73,30 @@ model RolePermission {
   updatedAt DateTime @updatedAt
 }
 
+model UserCompany {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  companyId Int
+  user      User     @relation(fields: [userId], references: [id])
+  company   Company  @relation(fields: [companyId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Company {
-  id            Int          @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   cnpj          String
   corporateName String
   tradeName     String
+  userCompanies UserCompany[]
   departments   Department[]
   sectors       Sector[]
   costCenters   CostCenter[]
   employees     Employee[]
   teams         Team[]
-  status        String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Department {
