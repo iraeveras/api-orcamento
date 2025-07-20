@@ -94,9 +94,10 @@ model Company {
   costCenters   CostCenter[]
   employees     Employee[]
   teams         Team[]
-  status    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  vacations     Vacation[]
+  status        String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Department {
@@ -122,6 +123,7 @@ model Sector {
   costCenters  CostCenter[]
   employees    Employee[]
   teams        Team[]
+  vacations    Vacation[]
   status       String       @default("active")
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -172,6 +174,7 @@ model Employee {
   sectorId           Int
   sector             Sector              @relation(fields: [sectorId], references: [id])
   acquisitionPeriods AcquisitionPeriod[]
+  vacations          Vacation[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }
@@ -186,4 +189,30 @@ model AcquisitionPeriod {
   employee   Employee @relation(fields: [employeeId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Vacation {
+  id                     Int      @id @default(autoincrement())
+  employeeId             Int
+  companyId              Int
+  sectorId               Int
+  acquisitionPeriodStart DateTime
+  acquisitionPeriodEnd   DateTime
+  month                  Int
+  year                   Int
+  vacationDays           Int
+  abonoDays              Int
+  thirteenthAdvance      Boolean
+  baseSalary             Decimal
+  overtimeAverage        Decimal
+  vacationValue          Decimal
+  onethirdValue          Decimal
+  abonoValue             Decimal
+  abonoOnethirdValue     Decimal
+  status                 String   @default("scheduled")
+  employee               Employee @relation(fields: [employeeId], references: [id])
+  company                Company  @relation(fields: [companyId], references: [id])
+  sector                 Sector   @relation(fields: [sectorId], references: [id])
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 }
