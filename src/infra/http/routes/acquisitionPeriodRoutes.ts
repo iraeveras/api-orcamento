@@ -5,9 +5,9 @@ import {
     updateAcquisitionPeriod,
     deleteAcquisitionPeriod
 } from '@/infra/http/controllers/acquisitionPeriodController';
-import { validate } from '@/infra/middlewares/validate';
-import { authenticate } from '@/infra/middlewares/authenticate';
+import { authenticateUser } from '@/infra/middlewares/authenticateUser';
 import { authorize } from '@/infra/middlewares/authorize';
+import { validate } from '@/infra/middlewares/validate';
 import { createAcquisitionPeriodSchema, updateAcquisitionPeriodSchema } from '@/domain/validations/acquisitionPeriodSchemas';
 import { asyncHandler } from '@/shared/utils/asyncHandler';
 
@@ -15,7 +15,7 @@ const router = Router();
 
 router.post(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('acquisition-periods', ['write']),
     validate(createAcquisitionPeriodSchema),
     asyncHandler(createAcquisitionPeriod)
@@ -23,14 +23,14 @@ router.post(
 
 router.get(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('acquisition-periods', ['read']),
     asyncHandler(listAcquisitionPeriods)
 );
 
 router.put(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('acquisition-periods', ['write']),
     validate(updateAcquisitionPeriodSchema),
     asyncHandler(updateAcquisitionPeriod)
@@ -38,7 +38,7 @@ router.put(
 
 router.delete(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('acquisition-periods', ['delete']),
     asyncHandler(deleteAcquisitionPeriod)
 );

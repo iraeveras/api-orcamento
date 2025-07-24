@@ -6,7 +6,7 @@ import {
     deleteTeam
 } from '@/infra/http/controllers/teamsController';
 import { validate } from '@/infra/middlewares/validate';
-import { authenticate } from '@/infra/middlewares/authenticate';
+import { authenticateUser } from '@/infra/middlewares/authenticateUser';
 import { authorize } from '@/infra/middlewares/authorize';
 import { createTeamSchema, updateTeamSchema } from '@/domain/validations/teamsSchemas';
 import { asyncHandler } from '@/shared/utils/asyncHandler';
@@ -15,27 +15,27 @@ const router = Router();
 
 router.post(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('teams', ['write']),
     validate(createTeamSchema),
     asyncHandler(createTeam)
 );
 router.get(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('teams', ['read']),
     asyncHandler(listTeams)
 );
 router.put(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('teams', ['write']),
     validate(updateTeamSchema),
     asyncHandler(updateTeam)
 );
 router.delete(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('teams', ['delete']),
     asyncHandler(deleteTeam)
 );

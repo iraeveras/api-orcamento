@@ -5,9 +5,9 @@ import {
     updateCostCenter,
     deleteCostCenter
 } from '@/infra/http/controllers/costCenterController';
-import { validate } from '@/infra/middlewares/validate';
-import { authenticate } from '@/infra/middlewares/authenticate';
+import { authenticateUser } from '@/infra/middlewares/authenticateUser';
 import { authorize } from '@/infra/middlewares/authorize';
+import { validate } from '@/infra/middlewares/validate';
 import { createCostCenterSchema, updateCostCenterSchema } from '@/domain/validations/costCenterSchemas';
 import { asyncHandler } from '@/shared/utils/asyncHandler';
 
@@ -15,7 +15,7 @@ const router = Router();
 
 router.post(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('costCenters', ['write']),
     validate(createCostCenterSchema),
     asyncHandler(createCostCenter)
@@ -23,14 +23,14 @@ router.post(
 
 router.get(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('costCenters', ['read']),
     asyncHandler(listCostCenters)
 );
 
 router.put(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('costCenters', ['write']),
     validate(updateCostCenterSchema),
     asyncHandler(updateCostCenter)
@@ -38,7 +38,7 @@ router.put(
 
 router.delete(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('costCenters', ['delete']),
     asyncHandler(deleteCostCenter)
 );

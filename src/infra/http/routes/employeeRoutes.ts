@@ -5,9 +5,9 @@ import {
     updateEmployee,
     deleteEmployee
 } from '@/infra/http/controllers/employeeController';
-import { validate } from '@/infra/middlewares/validate';
-import { authenticate } from '@/infra/middlewares/authenticate';
+import { authenticateUser } from '@/infra/middlewares/authenticateUser';
 import { authorize } from '@/infra/middlewares/authorize';
+import { validate } from '@/infra/middlewares/validate';
 import { createEmployeeSchema, updateEmployeeSchema } from '@/domain/validations/employeeSchemas';
 import { asyncHandler } from '@/shared/utils/asyncHandler';
 
@@ -15,7 +15,7 @@ const router = Router();
 
 router.post(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('employees', ['write']),
     validate(createEmployeeSchema),
     asyncHandler(createEmployee)
@@ -23,14 +23,14 @@ router.post(
 
 router.get(
     '/',
-    authenticate,
+    authenticateUser,
     authorize('employees', ['read']),
     asyncHandler(listEmployees)
 );
 
 router.put(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('employees', ['write']),
     validate(updateEmployeeSchema),
     asyncHandler(updateEmployee)
@@ -38,7 +38,7 @@ router.put(
 
 router.delete(
     '/:id',
-    authenticate,
+    authenticateUser,
     authorize('employees', ['delete']),
     asyncHandler(deleteEmployee)
 );
