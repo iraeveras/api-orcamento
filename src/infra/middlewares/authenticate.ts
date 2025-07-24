@@ -1,8 +1,9 @@
+// FILE: src/infra/middlewares/authenticate.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import prisma from '@/infra/database/prisma/client';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'chave-ultra-secreta';
+const JWT_SECRET = process.env.JWT_SECRET || 'mySuperSecretKey12345!@';
 
 export interface AuthUserPayload {
     id: number;
