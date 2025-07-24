@@ -16,6 +16,12 @@ const userRepository = userRepositoryPrisma();
 const auditlogRepository = auditlogRepositoryPrisma();
 const JWT_SECRET = process.env.JWT_SECRET || 'mySuperSecretKey12345!@';
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 10
+const ACCESS_TOKEN_EXP = '15m';
+const REFRESH_TOKEN_EXP_DAYS = 7;
+
+function getRefreshTokenExpires() {
+  return new Date(Date.now() + REFRESH_TOKEN_EXP_DAYS * 24 * 60 * 60 * 1000);
+}
 
 export async function login(req: Request, res: Response): Promise<void> {
     try {
@@ -28,11 +34,33 @@ export async function login(req: Request, res: Response): Promise<void> {
             res.status(401).json(apiResponse(null, 'Usuário ou senha inválidos'));
             return;
         }
-        const token = jwt.sign(
+        // Access Token
+        const accessToken = jwt.sign(
             { id: user.id, email: user.email, roleId: user.roleId },
             JWT_SECRET,
-            { expiresIn: '8h' }
+            { expiresIn: ACCESS_TOKEN_EXP }
         );
+
+        // Refresh Token
+        const refreshToken = crypto.randomBytes(64).toString('hex');
+        const refreshExpires = getRefreshTokenExpires();
+        await prisma.refreshToken.create({
+            data: { token: refreshToken, userId: user.id, expiresAt: refreshExpires }
+        });
+
+        // Set cookies
+        res.cookie('token', accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000
+        });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: REFRESH_TOKEN_EXP_DAYS * 24 * 60 * 60 * 1000
+        });
 
         // Log de autenticação (auditlog)
         await auditlogRepository.log({
@@ -44,9 +72,84 @@ export async function login(req: Request, res: Response): Promise<void> {
             ipAddress: req.ip
         });
 
-        res.json(apiResponse({
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
-            token
+        res.status(200).json(apiResponse({ message: "Login realizado com sucesso" }));
+    } catch (error) {
+        res.status(400).json(apiResponse(null, error instanceof Error ? error.message : 'Unexpected error'));
+    }
+}
+
+// LOGOUT
+export async function logout(req: Request, res: Response) {
+    const token = req.cookies['token'];
+    const refreshToken = req.cookies['refreshToken'];
+    if (token) {
+        // Pega exp do token JWT para registrar expiração
+        const decoded: any = jwt.decode(token);
+        const expiresAt = new Date((decoded?.exp || 0) * 1000);
+        await prisma.tokenBlacklist.create({
+            data: { token, userId: req.user?.id || 0, expiresAt }
+        });
+    }
+    if (refreshToken) {
+        await prisma.refreshToken.deleteMany({ where: { token: refreshToken } });
+    }
+    res.clearCookie('token');
+    res.clearCookie('refreshToken');
+    res.status(200).json({ message: "Logout realizado com sucesso" });
+}
+
+// REFRESH TOKEN
+export async function refreshToken(req: Request, res: Response) {
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+        res.status(401).json({ error: "Refresh token não informado" });
+        return
+    }
+
+    const found = await prisma.refreshToken.findUnique({ where: { token: refreshToken } });
+    if (!found || found.expiresAt < new Date()) {
+        res.status(401).json({ error: "Refresh token inválido ou expirado" });
+        return
+    }
+    const user = await prisma.user.findUnique({ where: { id: found.userId } });
+    if (!user) {
+        res.status(401).json({ error: "Usuário não encontrado" });
+        return
+    }
+
+    // Novo access token
+    const newAccessToken = jwt.sign(
+        { id: user.id, email: user.email, roleId: user.roleId },
+        JWT_SECRET,
+        { expiresIn: ACCESS_TOKEN_EXP }
+    );
+    res.cookie('token', newAccessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000
+    });
+    res.status(200).json({ message: "Token renovado com sucesso" });
+}
+
+export async function getMe(req: Request, res: Response): Promise<void> {
+    try {
+        // req.user é populado pelo authenticateToken
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.id },
+            include: { role: { include: { permissions: true } }, companies: { include: { company: true } } }
+        });
+        if (!user) {
+            res.status(404).json(apiResponse(null, "Usuário não encontrado"));
+            return;
+        }
+        res.status(200).json(apiResponse({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            companies: user.companies?.map(c => c.company) ?? [],
+            status: user.status
         }));
     } catch (error) {
         res.status(400).json(apiResponse(null, error instanceof Error ? error.message : 'Unexpected error'));
