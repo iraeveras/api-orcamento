@@ -16,7 +16,7 @@ const userRepository = userRepositoryPrisma();
 const auditlogRepository = auditlogRepositoryPrisma();
 const JWT_SECRET = process.env.JWT_SECRET || 'mySuperSecretKey12345!@';
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 10
-const ACCESS_TOKEN_EXP = '15m';
+const ACCESS_TOKEN_EXP = '60m';
 const REFRESH_TOKEN_EXP_DAYS = 7;
 
 function getRefreshTokenExpires() {
@@ -51,7 +51,7 @@ export async function login(req: Request, res: Response): Promise<void> {
         // Set cookies
         res.cookie('token', accessToken, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 15 * 60 * 1000
         });
@@ -141,7 +141,7 @@ export async function getMe(req: Request, res: Response): Promise<void> {
         });
         if (!user) {
             res.status(404).json(apiResponse(null, "Usuário não encontrado"));
-            return;
+            return
         }
         res.status(200).json(apiResponse({
             id: user.id,
