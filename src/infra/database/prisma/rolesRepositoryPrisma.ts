@@ -1,10 +1,12 @@
+// FILE: src/infra/database/prisma/roleRepositoryPrisma.ts
+import { Prisma } from '@prisma/client';
 import prisma from './client';
 import { IRolesRepository } from '@/domain/repositories/rolesRepository';
 import { Role } from '@/domain/entities/Role';
 
 export function rolesRepositoryPrisma(): IRolesRepository {
     return {
-        async create(data) {
+        async create(data: Partial<Role> & Prisma.RoleCreateInput & { permissions?: { module: string; actions: string[]; scope: string; }[] }) {
             const { permissions, ...roledata } = data;
             return prisma.role.create({ 
                 data: {
@@ -22,7 +24,7 @@ export function rolesRepositoryPrisma(): IRolesRepository {
                 include: { permissions: true },
             });
         },
-        async update(id, data: Partial<Role> & { permissions?: any[] }) {
+        async update(id, data: Partial<Role> & Prisma.RoleUpdateInput & { permissions?: { module: string; actions: string[]; scope: string; }[]}) {
             const { permissions, ...roleData } = data;
             return prisma.role.update({ 
                 where: { id }, 
