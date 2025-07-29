@@ -15,6 +15,7 @@ export async function authenticateUser(req: Request, res: Response, next: NextFu
     // Tenta pegar token do cookie (padrão) ou do header Authorization (para APIs)
     const token = req.cookies['token'] || (req.headers.authorization?.replace('Bearer ', '') ?? null);
     if (!token) {
+        console.warn("Token não informado na requisição");
         res.status(401).json({ error: 'Token não informado' });
         return
     };
@@ -22,6 +23,7 @@ export async function authenticateUser(req: Request, res: Response, next: NextFu
     // Blacklist check
     const isBlacklisted = await prisma.tokenBlacklist.findUnique({ where: { token } });
     if (isBlacklisted) {
+        console.warn(`Token revogado encontrado na blacklist para usuário ${req.user?.id}`);
         res.status(401).json({ error: "Token revogado" });
         return
     }
@@ -35,13 +37,16 @@ export async function authenticateUser(req: Request, res: Response, next: NextFu
             include: { role: { include: { permissions: true } }, companies: { include: { company: true } } }
         });
         if (!user) {
+            console.warn(`Usuário não encontrado no banco com id ${decoded.id}`);
             res.status(401).json({ error: "Usuário não encontrado" });
             return
         }
 
         req.user = user;
         next();
-    } catch {
+    } catch (error) {
+        console.error("Erro na verificação do token JWT:", error);
         res.status(401).json({ error: 'Token inválido ou expirado' });
+        return
     }
 }
