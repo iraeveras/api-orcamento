@@ -1,3 +1,4 @@
+// FILE: src/infra/http/routes/teamsRoutes.ts
 import { Router } from 'express';
 import {
     createTeam,

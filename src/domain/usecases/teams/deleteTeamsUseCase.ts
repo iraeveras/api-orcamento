@@ -1,4 +1,4 @@
-// deleteTeamsUseCase.ts
+// FILE: src/domain/usecases/teams/deleteTeamsUseCase.ts
 import { ITeamsRepository } from '@/domain/repositories/teamsRepository';
 import { IAuditlogRepository } from '@/domain/repositories/auditlogRepository';
 
