@@ -16,7 +16,7 @@ const router = Router();
 router.post(
     '/',
     authenticateUser,
-    authorize('costCenters', ['write']),
+    authorize('costcenters', ['write']),
     validate(createCostCenterSchema),
     asyncHandler(createCostCenter)
 );
@@ -24,14 +24,14 @@ router.post(
 router.get(
     '/',
     authenticateUser,
-    authorize('costCenters', ['read']),
+    authorize('costcenters', ['read']),
     asyncHandler(listCostCenters)
 );
 
 router.put(
     '/:id',
     authenticateUser,
-    authorize('costCenters', ['write']),
+    authorize('costcenters', ['write']),
     validate(updateCostCenterSchema),
     asyncHandler(updateCostCenter)
 );
@@ -39,7 +39,7 @@ router.put(
 router.delete(
     '/:id',
     authenticateUser,
-    authorize('costCenters', ['delete']),
+    authorize('costcenters', ['delete']),
     asyncHandler(deleteCostCenter)
 );
 
