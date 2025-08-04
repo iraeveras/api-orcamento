@@ -1,3 +1,4 @@
+// FILE: src/domain/validations/employeeSchemas.ts
 import { z } from 'zod';
 
 export const createEmployeeSchema = z.object({
@@ -11,6 +12,7 @@ export const createEmployeeSchema = z.object({
     companyId: z.number(),
     departmentId: z.number(),
     sectorId: z.number(),
+    teams: z.array(z.number()).optional(),
 });
 
 export const updateEmployeeSchema = z.object({
@@ -24,4 +26,5 @@ export const updateEmployeeSchema = z.object({
     companyId: z.number().optional(),
     departmentId: z.number().optional(),
     sectorId: z.number().optional(),
+    teams: z.array(z.number()).optional(),
 });

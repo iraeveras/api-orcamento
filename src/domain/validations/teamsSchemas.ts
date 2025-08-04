@@ -1,3 +1,4 @@
+// FILE: src/domain/validations/teamsSchemas.ts
 import { z } from 'zod';
 
 export const createTeamSchema = z.object({    
@@ -5,7 +6,8 @@ export const createTeamSchema = z.object({
     companyId: z.number(),
     sectorId: z.number(),
     leaderId: z.number(),
-    status: z.string().default("active").optional()    
+    members: z.array(z.number()).optional(),
+    status: z.string().default("active").optional()
 });
 
 export const updateTeamSchema = z.object({    
@@ -13,5 +15,6 @@ export const updateTeamSchema = z.object({
     companyId: z.number().optional(),
     sectorId: z.number().optional(),
     leaderId: z.number().optional(),
-    status: z.string().optional()    
+    members: z.array(z.number()).optional(),
+    status: z.string().optional()
 });

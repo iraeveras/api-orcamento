@@ -1,4 +1,4 @@
-// createTeamsUseCase.ts
+// FILE: src/domain/usecases/teams/createTeamsUseCase.ts
 import { ITeamsRepository } from '@/domain/repositories/teamsRepository';
 import { IAuditlogRepository } from '@/domain/repositories/auditlogRepository';
 import { Team } from '@/domain/entities/Teams';
@@ -8,6 +8,7 @@ interface CreateTeamDTO {
     companyId: number;
     sectorId: number;
     leaderId: number;
+    members?: number[];
     status?: string;
 }
 
