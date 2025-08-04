@@ -44,7 +44,11 @@ export async function authenticateUser(req: Request, res: Response, next: NextFu
 
         req.user = user;
         next();
-    } catch (error) {
+    } catch (error: any) {
+        if (error.name === "TokenExpiredError") {
+            res.status(401).json({ error: "Sessão expirada. Faça login novamente." });
+            return
+        }
         console.error("Erro na verificação do token JWT:", error);
         res.status(401).json({ error: 'Token inválido ou expirado' });
         return

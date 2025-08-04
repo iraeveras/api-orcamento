@@ -1,7 +1,7 @@
 // FILE: src/infra/http/controllers/userController.ts
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import crypto from 'crypto';
 import { createUserUseCase } from '@/domain/usecases/user/createUserUseCase';
 import { listUsersUseCase } from '@/domain/usecases/user/listUsersUseCase';
@@ -16,11 +16,11 @@ const userRepository = userRepositoryPrisma();
 const auditlogRepository = auditlogRepositoryPrisma();
 const JWT_SECRET = process.env.JWT_SECRET || 'mySuperSecretKey12345!@';
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 10
-const ACCESS_TOKEN_EXP = '60m';
+const ACCESS_TOKEN_EXP = '12h';
 const REFRESH_TOKEN_EXP_DAYS = 7;
 
 function getRefreshTokenExpires() {
-  return new Date(Date.now() + REFRESH_TOKEN_EXP_DAYS * 24 * 60 * 60 * 1000);
+  return new Date(Date.now() + REFRESH_TOKEN_EXP_DAYS * 12 * 60 * 60 * 1000);
 }
 
 export async function login(req: Request, res: Response): Promise<void> {
@@ -53,13 +53,13 @@ export async function login(req: Request, res: Response): Promise<void> {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 15 * 60 * 1000
+            maxAge: 12 * 60 * 60 * 1000
         });
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',
-            maxAge: REFRESH_TOKEN_EXP_DAYS * 24 * 60 * 60 * 1000
+            maxAge: REFRESH_TOKEN_EXP_DAYS * 12 * 60 * 60 * 1000
         });
 
         // Log de autenticação (auditlog)
@@ -127,7 +127,7 @@ export async function refreshToken(req: Request, res: Response) {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        maxAge: 15 * 60 * 1000
+        maxAge: 12 * 60 * 60 * 1000
     });
     res.status(200).json({ message: "Token renovado com sucesso" });
 }
@@ -148,6 +148,7 @@ export async function getMe(req: Request, res: Response): Promise<void> {
             name: user.name,
             email: user.email,
             role: user.role,
+            TokenExpiredError: req.user.exp ? req.user.exp * 1000 : null,
             companies: user.companies?.map(c => c.company) ?? [],
             status: user.status
         }));
