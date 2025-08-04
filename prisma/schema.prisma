@@ -145,20 +145,6 @@ model Sector {
   updatedAt    DateTime     @updatedAt
 }
 
-model Team {
-  id        Int      @id @default(autoincrement())
-  name      String
-  companyId Int
-  company   Company  @relation(fields: [companyId], references: [id])
-  sectorId  Int
-  sector    Sector   @relation(fields: [sectorId], references: [id])
-  leaderId  Int // FK para Employee (ou User, dependendo da sua estrutura)
-  leader    User     @relation("UserLedTeams", fields: [leaderId], references: [id])
-  status    String   @default("active")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model CostCenter {
   id           Int        @id @default(autoincrement())
   name         String
@@ -172,6 +158,21 @@ model CostCenter {
   sector       Sector     @relation(fields: [sectorId], references: [id])
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+}
+
+model Team {
+  id        Int          @id @default(autoincrement())
+  name      String
+  companyId Int
+  company   Company      @relation(fields: [companyId], references: [id])
+  sectorId  Int
+  sector    Sector       @relation(fields: [sectorId], references: [id])
+  leaderId  Int // FK para Employee (ou User, dependendo da sua estrutura)
+  leader    User         @relation("UserLedTeams", fields: [leaderId], references: [id])
+  members   TeamMember[]
+  status    String       @default("active")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }
 
 model Employee {
@@ -191,8 +192,20 @@ model Employee {
   sector             Sector              @relation(fields: [sectorId], references: [id])
   acquisitionPeriods AcquisitionPeriod[]
   vacations          Vacation[]
+  teams              TeamMember[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+}
+
+model TeamMember {
+  team       Team     @relation(fields: [teamId], references: [id])
+  teamId     Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([teamId, employeeId])
 }
 
 model AcquisitionPeriod {
