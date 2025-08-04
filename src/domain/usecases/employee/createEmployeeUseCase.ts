@@ -1,3 +1,4 @@
+// FILE: src/domain/usecases/employee/createEmployeeUseCase.ts
 import { IEmployeeRepository } from '@/domain/repositories/employeeRepository';
 import { IAuditlogRepository } from '@/domain/repositories/auditlogRepository';
 import { Employee } from '@/domain/entities/Employee';
@@ -13,6 +14,7 @@ interface CreateEmployeeDTO {
     companyId: number;
     departmentId: number;
     sectorId: number;
+    teams: number[];
 }
 interface CreateContext {
     userId: number;
