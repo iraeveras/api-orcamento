@@ -27,7 +27,9 @@ export async function updateBudgetPeriod(req: Request, res: Response) {
 
 export async function listBudgetPeriods(req: Request, res: Response) {
     const useCase = listBudgetPeriodUseCase(budgetPeriodRepository);
-    const periods = await useCase.execute();
+    const companyId = req.query.companyId ? Number(req.query.companyId) : undefined;
+    const status = (req.query.status as 'open' | 'closed' | 'pending') || undefined;
+    const periods = await useCase.execute({ companyId, status } as any);
     res.status(200).json(apiResponse(periods));
 }
 

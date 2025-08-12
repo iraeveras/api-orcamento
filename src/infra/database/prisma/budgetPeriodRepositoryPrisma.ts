@@ -1,5 +1,6 @@
 import prisma from './client';
 import { IBudgetPeriodRepository } from '@/domain/repositories/budgetPeriodRepository';
+import { BudgetPeriodFilters } from '@/domain/repositories/budgetPeriodRepository';
 import { BudgetPeriod } from '@/domain/entities/BudgetPeriods';
 
 export function budgetPeriodRepositoryPrisma(): IBudgetPeriodRepository {
@@ -13,8 +14,11 @@ export function budgetPeriodRepositoryPrisma(): IBudgetPeriodRepository {
         async findById(id) {
             return prisma.budgetPeriod.findUnique({ where: { id } });
         },
-        async list() {
-            return prisma.budgetPeriod.findMany();
+        async list(filters?: BudgetPeriodFilters) {
+            const where: any = {};
+            if (filters?.companyId) where.companyId = filters.companyId;
+            if (filters?.status) where.status = filters.status;
+            return prisma.budgetPeriod.findMany({ where, orderBy: { year: 'desc'} });
         },
         async delete(id) {
             try {
