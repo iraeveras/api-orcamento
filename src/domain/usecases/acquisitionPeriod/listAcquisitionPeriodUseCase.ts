@@ -1,9 +1,9 @@
-import { IAcquisitionPeriodRepository } from '@/domain/repositories/acquisitionPeriodRepository';
+import { AcquisitionPeriodFilters, IAcquisitionPeriodRepository } from '@/domain/repositories/acquisitionPeriodRepository';
 
 export function listAcquisitionPeriodUseCase(repository: IAcquisitionPeriodRepository) {
     return {
-        async execute() {
-            return repository.list();
+        async execute(filters?: AcquisitionPeriodFilters) {
+            return repository.list(filters);
         }
     };
 }

@@ -42,7 +42,9 @@ export async function updateAcquisitionPeriod(req: Request, res: Response): Prom
 export async function listAcquisitionPeriods(req: Request, res: Response): Promise<void> {
     try {
         const useCase = listAcquisitionPeriodUseCase(repository);
-        const result = await useCase.execute();
+        const employeeId = req.query.employeeId ? Number(req.query.employeeId) : undefined;
+        const status = (req.query.status as string) || undefined
+        const result = await useCase.execute({ employeeId, status });
         res.status(200).json(apiResponse(result));
     } catch (error) {
         res.status(400).json(apiResponse(null, error instanceof Error ? error.message : 'Unexpected error'));

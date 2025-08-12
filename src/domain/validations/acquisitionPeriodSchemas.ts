@@ -9,6 +9,7 @@ export const createAcquisitionPeriodSchema = z.object({
 });
 
 export const updateAcquisitionPeriodSchema = z.object({
+    employeeId: z.number().optional(),
     startDate: z.string().min(8).optional(),
     endDate: z.string().min(8).optional(),
     year: z.number().optional(),
