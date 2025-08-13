@@ -112,7 +112,7 @@ model Company {
   teams         Team[]
   vacations     Vacation[]
   budgetPeriods BudgetPeriod[]
-  overtimes   Overtime[]
+  overtimes     Overtime[]
   status        String
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -158,7 +158,7 @@ model CostCenter {
   department   Department @relation(fields: [departmentId], references: [id])
   sectorId     Int
   sector       Sector     @relation(fields: [sectorId], references: [id])
-  overtimes   Overtime[]
+  overtimes    Overtime[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
@@ -186,6 +186,8 @@ model Employee {
   position           String
   salary             Float
   dangerPay          Boolean             @default(false)
+  monthlyHours       Float
+  workSchedule       String
   status             String              @default("Ativo")
   companyId          Int
   company            Company             @relation(fields: [companyId], references: [id])
@@ -196,7 +198,7 @@ model Employee {
   acquisitionPeriods AcquisitionPeriod[]
   vacations          Vacation[]
   teams              TeamMember[]
-  overtimes   Overtime[]
+  overtimes          Overtime[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }
@@ -281,54 +283,54 @@ enum OvertimeStatus {
 
 // --- model principal
 model Overtime {
-  id                 Int              @id @default(autoincrement())
-  year               Int
-  month              Int
-  companyId          Int
-  company            Company          @relation(fields: [companyId], references: [id])
-  costCenterId       Int
-  costCenter         CostCenter       @relation(fields: [costCenterId], references: [id])
-  employeeId         Int
-  employee           Employee         @relation(fields: [employeeId], references: [id])
-  budgetPeriodId     Int
-  budgetPeriod       BudgetPeriod     @relation(fields: [budgetPeriodId], references: [id])
+  id             Int          @id @default(autoincrement())
+  year           Int
+  month          Int
+  companyId      Int
+  company        Company      @relation(fields: [companyId], references: [id])
+  costCenterId   Int
+  costCenter     CostCenter   @relation(fields: [costCenterId], references: [id])
+  employeeId     Int
+  employee       Employee     @relation(fields: [employeeId], references: [id])
+  budgetPeriodId Int
+  budgetPeriod   BudgetPeriod @relation(fields: [budgetPeriodId], references: [id])
 
-  function           String
+  function String
 
   // quantidades
-  he50Qty            Int              @default(0)
-  he100Qty           Int              @default(0)
-  holidayDaysQty     Int              @default(0)
-  nightHoursQty      Int              @default(0)
+  he50Qty        Int @default(0)
+  he100Qty       Int @default(0)
+  holidayDaysQty Int @default(0)
+  nightHoursQty  Int @default(0)
 
   // horas
-  normalHours        Int              @default(0)
-  overtime50         Int              @default(0)
-  overtime100        Int              @default(0)
-  holidayHours       Int              @default(0)
-  nightShiftHours    Int              @default(0)
+  normalHours     Int @default(0)
+  overtime50      Int @default(0)
+  overtime100     Int @default(0)
+  holidayHours    Int @default(0)
+  nightShiftHours Int @default(0)
 
   // valores
-  overtime50Value    Decimal          @default(0)
-  overtime100Value   Decimal          @default(0)
-  he50Value          Decimal          @default(0)
-  he100Value         Decimal          @default(0)
-  holidayValue       Decimal          @default(0)
-  nightShiftValue    Decimal          @default(0)
-  nightValue         Decimal          @default(0)
-  dsrValue           Decimal          @default(0)
-  dsrNightValue      Decimal          @default(0)
-  additionalValue    Decimal          @default(0)
-  totalValue         Decimal          @default(0)
-  budgetedAmount     Decimal          @default(0)
-  previousYearTotal  Decimal          @default(0)
-  variance           Decimal          @default(0)
-  variancePercentage Decimal          @default(0)
+  overtime50Value    Decimal @default(0)
+  overtime100Value   Decimal @default(0)
+  he50Value          Decimal @default(0)
+  he100Value         Decimal @default(0)
+  holidayValue       Decimal @default(0)
+  nightShiftValue    Decimal @default(0)
+  nightValue         Decimal @default(0)
+  dsrValue           Decimal @default(0)
+  dsrNightValue      Decimal @default(0)
+  additionalValue    Decimal @default(0)
+  totalValue         Decimal @default(0)
+  budgetedAmount     Decimal @default(0)
+  previousYearTotal  Decimal @default(0)
+  variance           Decimal @default(0)
+  variancePercentage Decimal @default(0)
 
-  justification      String?          // opcional
+  justification String? // opcional
 
-  status             OvertimeStatus   @default(open)
+  status OvertimeStatus @default(open)
 
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

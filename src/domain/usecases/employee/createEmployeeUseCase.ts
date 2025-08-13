@@ -10,6 +10,8 @@ interface CreateEmployeeDTO {
     position: string;
     salary: number;
     dangerPay: boolean;
+    monthlyHours: number;
+    workSchedule: string;
     status?: string;
     companyId: number;
     departmentId: number;
