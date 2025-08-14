@@ -17,8 +17,8 @@ async function main() {
                 description: 'Acesso total ao sistema',
                 permissions: {
                     create: [
-                        { module: 'users', actions: ['read', 'write', 'delete'], scope: 'all' },
-                        { module: 'roles', actions: ['read', 'write', 'delete'], scope: 'all' },
+                        { module: 'users', actions: ['read', 'write', 'delete', 'export'], scope: 'all' },
+                        { module: 'roles', actions: ['read', 'write', 'delete', 'export'], scope: 'all' },
                         // adicione outros módulos conforme necessário
                     ],
                 },
@@ -28,7 +28,7 @@ async function main() {
     }
 
     // Verifica se já existe um admin com este email
-    const existing = await prisma.user.findUnique({ where: { email: 'admin@empresa.com' } });
+    const existing = await prisma.user.findUnique({ where: { email: 'admin@gmail.com' } });
     if (existing) {
         console.log('Usuário admin já existe:', existing.email);
         return;
@@ -39,7 +39,7 @@ async function main() {
     const adminUser = await prisma.user.create({
         data: {
             name: 'Administrador',
-            email: 'admin@empresa.com',
+            email: 'admin@gmail.com',
             password: passwordHash,
             roleId: adminRole.id,
         },
