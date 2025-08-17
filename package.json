@@ -9,6 +9,9 @@
     "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "prisma": {
+    "seedreset": "ts-node --transpile-only src/scripts/seedReset.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

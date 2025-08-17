@@ -1,3 +1,4 @@
+// FILE: src/domain/repositories/employeeRepository.ts
 import { Employee } from '@/domain/entities/Employee';
 
 export interface IEmployeeRepository {

@@ -16,6 +16,7 @@ interface CreateEmployeeDTO {
     companyId: number;
     departmentId: number;
     sectorId: number;
+    costcenterId: number;
     teams: number[];
 }
 interface CreateContext {

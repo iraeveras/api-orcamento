@@ -1,3 +1,4 @@
+// FILE: src/scripts/seedAdmin.ts
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 

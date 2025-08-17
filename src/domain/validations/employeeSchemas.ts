@@ -14,6 +14,7 @@ export const createEmployeeSchema = z.object({
     companyId: z.number(),
     departmentId: z.number(),
     sectorId: z.number(),
+    costcenterId: z.number(),
     teams: z.array(z.number()).optional(),
 });
 
@@ -24,11 +25,12 @@ export const updateEmployeeSchema = z.object({
     position: z.string().min(2).optional(),
     salary: z.number().optional(),
     dangerPay: z.boolean().optional(),
-    monthlyHours: z.number().nonnegative(),
-    workSchedule: z.string().min(1),
+    monthlyHours: z.number().nonnegative().optional(),
+    workSchedule: z.string().min(1).optional(),
     status: z.string().optional(),
     companyId: z.number().optional(),
     departmentId: z.number().optional(),
     sectorId: z.number().optional(),
+    costcenterId: z.number().optional(),
     teams: z.array(z.number()).optional(),
 });

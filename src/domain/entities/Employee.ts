@@ -13,6 +13,7 @@ export interface Employee {
     companyId: number;
     departmentId: number;
     sectorId: number;
+    costcenterId: number;
     teams?: number[];
     createdAt?: Date;
     updatedAt?: Date;
