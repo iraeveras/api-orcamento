@@ -181,7 +181,7 @@ model Team {
 
 model Employee {
   id                 Int                 @id @default(autoincrement())
-  matricula          String @unique
+  matricula          String              @unique
   name               String
   admission          DateTime
   position           String
@@ -197,7 +197,7 @@ model Employee {
   sectorId           Int
   sector             Sector              @relation(fields: [sectorId], references: [id])
   costcenterId       Int
-  costcenter        CostCenter @relation(fields: [costcenterId], references: [id], onUpdate: Cascade)
+  costcenter         CostCenter          @relation(fields: [costcenterId], references: [id], onUpdate: Cascade)
   acquisitionPeriods AcquisitionPeriod[]
   vacations          Vacation[]
   teams              TeamMember[]
@@ -234,9 +234,12 @@ model BudgetPeriod {
   description String
   closedBy    String?
   closedAt    DateTime?
+  vacations   Vacation[]
   overtimes   Overtime[]
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
+
+  @@unique([companyId, year])
 }
 
 model AcquisitionPeriod {
@@ -252,10 +255,11 @@ model AcquisitionPeriod {
 }
 
 model Vacation {
-  id                     Int      @id @default(autoincrement())
+  id                     Int          @id @default(autoincrement())
   employeeId             Int
   companyId              Int
   sectorId               Int
+  budgetPeriodId         Int
   acquisitionPeriodStart DateTime
   acquisitionPeriodEnd   DateTime
   month                  Int
@@ -269,12 +273,13 @@ model Vacation {
   onethirdValue          Decimal
   abonoValue             Decimal
   abonoOnethirdValue     Decimal
-  status                 String   @default("scheduled")
-  employee               Employee @relation(fields: [employeeId], references: [id])
-  company                Company  @relation(fields: [companyId], references: [id])
-  sector                 Sector   @relation(fields: [sectorId], references: [id])
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  status                 String       @default("scheduled")
+  employee               Employee     @relation(fields: [employeeId], references: [id])
+  company                Company      @relation(fields: [companyId], references: [id])
+  sector                 Sector       @relation(fields: [sectorId], references: [id])
+  budgetPeriod           BudgetPeriod @relation(fields: [budgetPeriodId], references: [id])
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
 }
 
 // --- enum

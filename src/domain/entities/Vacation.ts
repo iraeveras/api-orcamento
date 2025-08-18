@@ -4,6 +4,7 @@ export interface Vacation {
     employeeId: number;
     companyId: number;
     sectorId: number;
+    budgetPeriodId: number;
     acquisitionPeriodStart: Date;
     acquisitionPeriodEnd: Date;
     month: number;

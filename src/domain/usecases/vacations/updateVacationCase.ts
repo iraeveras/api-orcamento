@@ -17,13 +17,23 @@ export function updateVacationUseCase(
             const oldVacation = await vacationsRepository.findById(id);
             if (!oldVacation) return null;
 
-            const updated = {
+            const updatedPayload = {
                 ...data,
-                ...(data.acquisitionPeriodStart && { acquisitionPeriodStart: new Date(data.acquisitionPeriodStart) }),
-                ...(data.acquisitionPeriodEnd && { acquisitionPeriodEnd: new Date(data.acquisitionPeriodEnd) }),
+                ...(data.acquisitionPeriodStart && {
+                    acquisitionPeriodStart: 
+                        data.acquisitionPeriodStart instanceof Date 
+                            ? data.acquisitionPeriodStart 
+                            : new Date(data.acquisitionPeriodStart) 
+                }),
+                ...(data.acquisitionPeriodEnd && { 
+                    acquisitionPeriodEnd: 
+                        data.acquisitionPeriodEnd instanceof Date 
+                            ? data.acquisitionPeriodEnd 
+                            : new Date(data.acquisitionPeriodEnd) 
+                }),
             };
 
-            const vacation = await vacationsRepository.update(id, updated);
+            const vacation = await vacationsRepository.update(id, updatedPayload);
 
             await auditlogRepository.log({
                 userId: context.userId,
@@ -31,7 +41,7 @@ export function updateVacationUseCase(
                 entity: 'Vacation',
                 entityId: String(id),
                 oldData: oldVacation,
-                newData: updated,
+                newData: updatedPayload,
                 ipAddress: context.ipAddress,
             });
             

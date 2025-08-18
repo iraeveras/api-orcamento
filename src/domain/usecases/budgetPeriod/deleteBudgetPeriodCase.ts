@@ -1,3 +1,4 @@
+// FILE: src/domain/usecases/budgetPeriod/deleteBudgetPeriodUseCase.ts
 import { IBudgetPeriodRepository } from '@/domain/repositories/budgetPeriodRepository';
 import { IAuditlogRepository } from '@/domain/repositories/auditlogRepository';
 

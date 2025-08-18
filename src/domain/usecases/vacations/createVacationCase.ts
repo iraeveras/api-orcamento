@@ -6,6 +6,8 @@ import { IAuditlogRepository } from "@/domain/repositories/auditlogRepository";
 interface CreateVacationDTO {
     employeeId: number;
     companyId: number;
+    sectorId: number;
+    budgetPeriodId: number
     acquisitionPeriodStart: Date;
     acquisitionPeriodEnd: Date;
     month: number;
@@ -20,7 +22,6 @@ interface CreateVacationDTO {
     abonoValue: number;
     abonoOnethirdValue: number;
     status: string;
-    sectorId: number;
 }
 
 interface CreateContext {
@@ -36,8 +37,15 @@ export function createVacationUseCase(
         async execute(data: CreateVacationDTO, context: CreateContext): Promise<Vacation> {
             const vacation = await vacationsRepository.create({
                 ...data,
-                acquisitionPeriodStart: new Date(data.acquisitionPeriodStart),
-                acquisitionPeriodEnd: new Date(data.acquisitionPeriodEnd),
+                acquisitionPeriodStart: 
+                    data.acquisitionPeriodStart instanceof Date 
+                        ? data.acquisitionPeriodStart 
+                        : new Date(data.acquisitionPeriodStart),
+                
+                acquisitionPeriodEnd: 
+                    data.acquisitionPeriodEnd instanceof Date 
+                        ? data.acquisitionPeriodEnd 
+                        : new Date(data.acquisitionPeriodEnd),
             });
             await auditlogRepository.log({
                 userId: context.userId,

@@ -1,3 +1,4 @@
+// FILE: src/domain/usecases/budgetPeriod/listBudgetPeriodUseCase.ts
 import { BudgetPeriodFilters, IBudgetPeriodRepository } from '@/domain/repositories/budgetPeriodRepository';
 
 export function listBudgetPeriodUseCase(budgetPeriodRepository: IBudgetPeriodRepository) {

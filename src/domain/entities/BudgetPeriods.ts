@@ -1,3 +1,4 @@
+// FILE: src/domain/entities/BudgetPeriods.ts
 export type BudgetPeriodStatus = 'open' | 'closed' | 'pending';
 
 export interface BudgetPeriod {
@@ -10,6 +11,8 @@ export interface BudgetPeriod {
     description: string;
     closedBy?: string | null;
     closedAt?: Date | null;
+    overtimes?: any[];
+    vacations?: any[];
     createdAt?: Date;
     updatedAt?: Date;
 }

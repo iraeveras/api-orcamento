@@ -1,3 +1,4 @@
+//FILE: src/domain/repositories/budgetPeriodRepository.ts
 import { BudgetPeriod } from '@/domain/entities/BudgetPeriods';
 
 export type BudgetPeriodFilters = {
