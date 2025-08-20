@@ -1,5 +1,5 @@
 // FILE: src/app.ts
-import express, {Request, Response, NextFunction} from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -17,17 +17,20 @@ import roleRoutes from "@/infra/http/routes/roleRoutes";
 import vacationsRoutes from "@/infra/http/routes/vacationsRoutes";
 import budgetPeriodRoutes from "@/infra/http/routes/budgetPeriodRoutes";
 import overtimeRoutes from '@/infra/http/routes/overtimeRoutes';
+import costCenterPlanRoutes from "@/infra/http/routes/costCenterPlanRoutes";
+import costCenterPlanItemRoutes from '@/infra/http/routes/costCenterPlanItemRoutes';
+import expenseTypeRoutes from '@/infra/http/routes/expenseTypeRoutes';
 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true}));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(helmet());
 app.use(cookieParser());
 
 app.get('/health', (req, res) => {
-    res.json({status: 'ok'});
+    res.json({ status: 'ok' });
 });
 
 app.use('/users', userRoutes);
@@ -42,6 +45,9 @@ app.use("/roles", roleRoutes);
 app.use("/vacations", vacationsRoutes);
 app.use("/budgetperiods", budgetPeriodRoutes);
 app.use('/overtimes', overtimeRoutes);
+app.use("/costcenterplans", costCenterPlanRoutes);
+app.use('/costcenterplanitems', costCenterPlanItemRoutes);
+app.use('/expensetypes', expenseTypeRoutes);
 
 
 // Middleware global de erro (após todas as rotas)

@@ -100,22 +100,23 @@ model UserCompany {
 }
 
 model Company {
-  id            Int            @id @default(autoincrement())
-  cnpj          String
-  corporateName String
-  tradeName     String
-  userCompanies UserCompany[]
-  departments   Department[]
-  sectors       Sector[]
-  costCenters   CostCenter[]
-  employees     Employee[]
-  teams         Team[]
-  vacations     Vacation[]
-  budgetPeriods BudgetPeriod[]
-  overtimes     Overtime[]
-  status        String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id              Int              @id @default(autoincrement())
+  cnpj            String
+  corporateName   String
+  tradeName       String
+  userCompanies   UserCompany[]
+  departments     Department[]
+  sectors         Sector[]
+  costCenters     CostCenter[]
+  employees       Employee[]
+  teams           Team[]
+  vacations       Vacation[]
+  budgetPeriods   BudgetPeriod[]
+  overtimes       Overtime[]
+  costCenterPlans CostCenterPlan[]
+  status          String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Department {
@@ -341,4 +342,48 @@ model Overtime {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model CostCenterPlan {
+  id                   Int                  @id @default(autoincrement())
+  codPlanoCentroCusto  String
+  nomePlanoCentroCusto String
+  companyId            Int
+  company              Company              @relation(fields: [companyId], references: [id])
+  items                CostCenterPlanItem[]
+  status               String               @default("active")
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  // Evita duplicidade do "código" por empresa
+  @@unique([companyId, codPlanoCentroCusto])
+}
+
+model CostCenterPlanItem {
+  id                       Int            @id @default(autoincrement())
+  planoCentroCustoId       Int
+  plan                     CostCenterPlan @relation(fields: [planoCentroCustoId], references: [id])
+  codPlanoCentroCustoItem  String
+  nomePlanoCentroCustoItem String
+  status                   String         @default("active")
+  expenseTypes             ExpenseType[]
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+
+  // Evita duplicidade de código dentro do mesmo plano
+  @@unique([planoCentroCustoId, codPlanoCentroCustoItem])
+}
+
+model ExpenseType {
+  id                     Int                @id @default(autoincrement())
+  planoCentroCustoItemId Int
+  planItem               CostCenterPlanItem @relation(fields: [planoCentroCustoItemId], references: [id])
+  codTipoDespesa         String
+  nomeTipoDespesa        String
+  status                 String             @default("active")
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  // Evita duplicidade de código dentro do mesmo Item do Plano
+  @@unique([planoCentroCustoItemId, codTipoDespesa])
 }
