@@ -20,6 +20,7 @@ import overtimeRoutes from '@/infra/http/routes/overtimeRoutes';
 import costCenterPlanRoutes from "@/infra/http/routes/costCenterPlanRoutes";
 import costCenterPlanItemRoutes from '@/infra/http/routes/costCenterPlanItemRoutes';
 import expenseTypeRoutes from '@/infra/http/routes/expenseTypeRoutes';
+import expenseSubtypeRoutes from '@/infra/http/routes/expenseSubtypeRoutes';
 
 dotenv.config();
 const app = express();
@@ -48,6 +49,7 @@ app.use('/overtimes', overtimeRoutes);
 app.use("/costcenterplans", costCenterPlanRoutes);
 app.use('/costcenterplanitems', costCenterPlanItemRoutes);
 app.use('/expensetypes', expenseTypeRoutes);
+app.use('/expensesubtypes', expenseSubtypeRoutes);
 
 
 // Middleware global de erro (após todas as rotas)
