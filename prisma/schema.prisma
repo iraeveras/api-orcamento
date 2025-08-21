@@ -381,9 +381,24 @@ model ExpenseType {
   codTipoDespesa         String
   nomeTipoDespesa        String
   status                 String             @default("active")
+  expenseSubtypes        ExpenseSubtype[]
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
 
   // Evita duplicidade de código dentro do mesmo Item do Plano
   @@unique([planoCentroCustoItemId, codTipoDespesa])
+}
+
+model ExpenseSubtype {
+  id                 Int         @id @default(autoincrement())
+  tipoDespesaId      Int
+  expenseType        ExpenseType @relation(fields: [tipoDespesaId], references: [id])
+  codSubtipoDespesa  String
+  nomeSubtipoDespesa String
+  status             String      @default("active")
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  // evita duplicidade do código dentro do mesmo Tipo de Despesa
+  @@unique([tipoDespesaId, codSubtipoDespesa])
 }
