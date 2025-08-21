@@ -1,3 +1,4 @@
+// FILE: src/infra/database/prisma/expenseTypeRepositoryPrisma.ts
 import prisma from './client';
 import { IExpenseTypeRepository, ExpenseTypeFilters } from '@/domain/repositories/expenseTypeRepository';
 import { ExpenseType } from '@/domain/entities/ExpenseType';

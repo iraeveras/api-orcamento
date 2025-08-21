@@ -1,3 +1,4 @@
+// FILE: src/domain/usecases/costCenterPlanItem/listCostCenterPlanItemUseCase.ts
 import { CostCenterPlanItemFilters, ICostCenterPlanItemRepository } from '@/domain/repositories/costCenterPlanItemRepository';
 
 export function listCostCenterPlanItemUseCase(repo: ICostCenterPlanItemRepository) {

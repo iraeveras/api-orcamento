@@ -1,3 +1,4 @@
+// FILE: src/infra/http/controllers/costCenterPlanItemController.ts
 import { Request, Response } from 'express';
 import { apiResponse } from '@/shared/utils/apiResponse';
 import { costCenterPlanItemRepositoryPrisma } from '@/infra/database/prisma/costCenterPlanItemRepositoryPrisma';

@@ -1,3 +1,4 @@
+// FILE: src/domain/entities/ExpenseType.ts
 export type ExpenseTypeStatus = 'active' | 'inactive';
 
 export interface ExpenseType {

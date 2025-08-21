@@ -1,3 +1,4 @@
+// FILE: src/domain/entities/CostCenterPlan.ts
 export type CostCenterPlanStatus = 'active' | 'inactive';
 
 export interface CostCenterPlan {

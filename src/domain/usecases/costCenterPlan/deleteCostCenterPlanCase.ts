@@ -1,3 +1,4 @@
+// FILE: src/domain/usecases/costCenterPlan/deleteCostCenterPlanUseCase.ts
 import { ICostCenterPlanRepository } from "@/domain/repositories/costCenterPlanRepository";
 import { IAuditlogRepository } from "@/domain/repositories/auditlogRepository";
 

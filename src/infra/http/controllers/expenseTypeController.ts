@@ -1,3 +1,4 @@
+// FILE: src/infra/http/controllers/expenseTypeController.ts
 import { Request, Response } from 'express';
 import { apiResponse } from '@/shared/utils/apiResponse';
 import { expenseTypeRepositoryPrisma } from '@/infra/database/prisma/expenseTypeRepositoryPrisma';

@@ -1,3 +1,4 @@
+// FILE: src/domain/validations/costCenterPlanSchemas.ts
 import { z } from "zod";
 
 export const createCostCenterPlanSchema = z.object({

@@ -1,3 +1,4 @@
+// FILE: src/domain/repositories/costCenterPlanRepository.ts
 import { CostCenterPlan } from "@/domain/entities/CostCenterPlan";
 
 export type CostCenterPlanFilters = {

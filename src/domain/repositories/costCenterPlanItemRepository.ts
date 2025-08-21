@@ -1,3 +1,4 @@
+// FILE: src/domain/repositories/costCenterPlanItemRepository.ts
 import { CostCenterPlanItem } from '@/domain/entities/CostCenterPlanItem';
 
 export type CostCenterPlanItemFilters = {

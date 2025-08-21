@@ -1,3 +1,4 @@
+// FILE: src/domain/usecases/expenseType/deleteExpenseTypeUseCase.ts
 import { IExpenseTypeRepository } from '@/domain/repositories/expenseTypeRepository';
 import { IAuditlogRepository } from '@/domain/repositories/auditlogRepository';
 

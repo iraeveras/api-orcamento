@@ -1,3 +1,4 @@
+// FILE: src/domain/validations/expenseTypeSchemas.ts
 import { z } from 'zod';
 
 export const createExpenseTypeSchema = z.object({
