@@ -12,15 +12,15 @@ export function deleteEmployeeUseCase(
     auditlogRepository: IAuditlogRepository
 ) {
     return {
-        async execute(id: number, context: DeleteContext) {
-            await employeeRepository.delete(id);
+        async execute(id: number, companyId: number, context: DeleteContext) {
+            await employeeRepository.delete(id, companyId);
             await auditlogRepository.log({
                 userId: context.userId,
                 action: 'delete',
                 entity: 'Employee',
                 entityId: String(id),
-                ipAddress: context.ipAddress
+                ipAddress: context.ipAddress,
             });
-        }
+        },
     };
 }

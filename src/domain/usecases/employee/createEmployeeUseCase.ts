@@ -37,9 +37,9 @@ export function createEmployeeUseCase(
                 entity: 'Employee',
                 entityId: String(employee.id),
                 newData: employee,
-                ipAddress: context.ipAddress
+                ipAddress: context.ipAddress,
             });
             return employee;
-        }
+        },
     };
 }

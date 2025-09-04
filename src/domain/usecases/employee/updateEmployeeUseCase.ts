@@ -13,17 +13,22 @@ export function updateEmployeeUseCase(
     auditlogRepository: IAuditlogRepository
 ) {
     return {
-        async execute(id: number, data: Partial<Employee>, context: UpdateContext): Promise<Employee> {
-            const employee = await employeeRepository.update(id, data);
+        async execute(
+            id: number,
+            companyId: number,
+            data: Partial<Employee>,
+            context: UpdateContext
+        ): Promise<Employee> {
+            const employee = await employeeRepository.update(id, companyId, data);
             await auditlogRepository.log({
                 userId: context.userId,
                 action: 'update',
                 entity: 'Employee',
                 entityId: String(employee.id),
                 newData: data,
-                ipAddress: context.ipAddress
+                ipAddress: context.ipAddress,
             });
             return employee;
-        }
+        },
     };
 }

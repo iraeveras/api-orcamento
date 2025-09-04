@@ -4,14 +4,14 @@ import { z } from 'zod';
 export const createEmployeeSchema = z.object({
     matricula: z.string().min(1),
     name: z.string().min(2),
-    admission: z.string().min(8), // yyyy-mm-dd ou dd/mm/yyyy, ajuste se necessário
+    admission: z.string().min(8), // yyyy-mm-dd ou dd/mm/yyyy
     position: z.string().min(2),
     salary: z.number(),
     dangerPay: z.boolean(),
     monthlyHours: z.number().nonnegative(),
     workSchedule: z.string().min(1),
     status: z.string().optional(),
-    companyId: z.number(),
+    companyId: z.number().optional(), // <- vem do contexto
     departmentId: z.number(),
     sectorId: z.number(),
     costcenterId: z.number(),
@@ -28,7 +28,7 @@ export const updateEmployeeSchema = z.object({
     monthlyHours: z.number().nonnegative().optional(),
     workSchedule: z.string().min(1).optional(),
     status: z.string().optional(),
-    companyId: z.number().optional(),
+    companyId: z.number().optional(), // se vier, o guard confere
     departmentId: z.number().optional(),
     sectorId: z.number().optional(),
     costcenterId: z.number().optional(),

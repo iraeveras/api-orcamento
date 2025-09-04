@@ -5,73 +5,88 @@ import { Employee } from '@/domain/entities/Employee';
 
 export function employeeRepositoryPrisma(): IEmployeeRepository {
     return {
-        async create(data: Omit<Employee, 'id' | 'createdAt' | 'updatedAt'>): Promise<Employee> {
+        async create(data) {
             const { teams, ...employeeData } = data;
+
             const created = await prisma.employee.create({
                 data: {
                     ...employeeData,
-                    teams: teams && teams.length ? {
-                        create: teams.map((teamId: number) => ({
-                            team: { connect: { id: teamId } }
-                        })),
-                    } : undefined,
+                    teams: teams && teams.length
+                        ? {
+                            create: teams.map((teamId: number) => ({
+                                team: { connect: { id: teamId } },
+                            })),
+                        }
+                        : undefined,
                 },
-                include: { teams: true }
+                include: { teams: true },
             });
 
             return {
                 ...created,
-                teams: created.teams.map(teamMember => teamMember.teamId)
+                teams: created.teams.map(t => t.teamId),
             };
         },
-        async findById(id) {
-            const employee = await prisma.employee.findUnique({
-                where: { id },
-                include: { teams: true }
+
+        async findById(id, companyId) {
+            const emp = await prisma.employee.findFirst({
+                where: { id, companyId },
+                include: { teams: true },
             });
-            if (!employee) return null;
+            if (!emp) return null;
             return {
-                ...employee,
-                teams: employee.teams.map(teamMember => teamMember.teamId)
+                ...emp,
+                teams: emp.teams.map(t => t.teamId),
             };
         },
-        async list() {
-            const employees = await prisma.employee.findMany({
-                include: { teams: true }
+
+        async list(companyId) {
+            const emps = await prisma.employee.findMany({
+                where: { companyId },
+                include: { teams: true },
             });
-            return employees.map(emp => ({
-                ...emp,
-                teams: emp.teams.map(tm => tm.teamId)
+            return emps.map(e => ({
+                ...e,
+                teams: e.teams.map(t => t.teamId),
             }));
         },
-        async update(id, data: Partial<Employee>): Promise<Employee> {
+
+        async update(id, companyId, data) {
             const { teams, ...employeeData } = data;
+
+            // valida escopo
+            const current = await prisma.employee.findFirst({ where: { id, companyId } });
+            if (!current) throw new Error('Employee not found in this company');
 
             const updated = await prisma.employee.update({
                 where: { id },
                 data: {
                     ...employeeData,
-                    teams: {
-                        deleteMany: {},
-                        create: teams && teams.length ? teams.map((teamId: number) => ({
-                            team: { connect: { id: teamId } }
-                        })) : []
-                    },
+                    ...(teams
+                        ? {
+                            teams: {
+                                deleteMany: {}, // reseta vínculos
+                                create: teams.map((teamId: number) => ({
+                                    team: { connect: { id: teamId } },
+                                })),
+                            },
+                        }
+                        : {}),
                 },
-                include: { teams: true }
+                include: { teams: true },
             });
+
             return {
                 ...updated,
-                teams: updated.teams.map(teamMember => teamMember.teamId)
+                teams: updated.teams.map(t => t.teamId),
             };
         },
-        async delete(id) {
-            try {
-                await prisma.employee.delete({ where: { id } });
-                return true;
-            } catch {
-                return false;
-            }
-        }
+
+        async delete(id, companyId) {
+            const result = await prisma.employee.deleteMany({
+                where: { id, companyId },
+            });
+            return result.count > 0;
+        },
     };
 }
