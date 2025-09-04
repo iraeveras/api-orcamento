@@ -5,6 +5,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
+import { companyContext } from '@/infra/middlewares/companyContext';
+
 import userRoutes from '@/infra/http/routes/userRoutes';
 import companyRoutes from '@/infra/http/routes/companyRoutes';
 import departmentRoutes from '@/infra/http/routes/departmentRoutes';
@@ -29,6 +31,8 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(helmet());
 app.use(cookieParser());
+
+app.use(companyContext);
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
