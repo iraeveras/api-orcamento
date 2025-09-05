@@ -6,7 +6,7 @@ import {
 } from '@/domain/repositories/costCenterPlanRepository';
 import { CostCenterPlan } from '@/domain/entities/CostCenterPlan';
 
-// Normaliza o status lido do Prisma (string) para o union do domínio
+// Normaliza string do Prisma para union do domínio
 function normalizeStatus(s: string): CostCenterPlan['status'] {
     return s === 'active' || s === 'inactive' ? s : 'active';
 }
@@ -28,32 +28,29 @@ export function costCenterPlanRepositoryPrisma(): ICostCenterPlanRepository {
     return {
         async create(data) {
             const created = await prisma.costCenterPlan.create({
-                data: {
-                    ...data, // union 'active' | 'inactive' é aceito por string do Prisma
-                },
+                data: { ...data },
             });
             return toDomain(created);
         },
 
-        async update(id, data) {
+        async update(id, companyId, data) {
             const updated = await prisma.costCenterPlan.update({
-                where: { id },
-                data: {
-                    ...data,
-                },
+                where: { id_companyId: { id, companyId } },
+                data: { ...data },
             });
             return toDomain(updated);
         },
 
-        async findById(id) {
-            const found = await prisma.costCenterPlan.findUnique({ where: { id } });
+        async findById(id, companyId) {
+            const found = await prisma.costCenterPlan.findUnique({
+                where: { id_companyId: { id, companyId } },
+            });
             return found ? toDomain(found) : null;
         },
 
-        async list(filters?: CostCenterPlanFilters) {
-            const where: any = {};
-            if (filters?.companyId !== undefined) where.companyId = filters.companyId;
-            if (filters?.status) where.status = filters.status; // Prisma espera string
+        async list(companyId, filters) {
+            const where: any = { companyId };
+            if (filters?.status) where.status = filters.status;
             if (filters?.search) {
                 where.OR = [
                     { codPlanoCentroCusto: { contains: filters.search, mode: 'insensitive' } },
@@ -63,15 +60,15 @@ export function costCenterPlanRepositoryPrisma(): ICostCenterPlanRepository {
 
             const rows = await prisma.costCenterPlan.findMany({
                 where,
-                orderBy: [{ companyId: 'asc' }, { codPlanoCentroCusto: 'asc' }],
+                orderBy: [{ codPlanoCentroCusto: 'asc' }],
             });
 
             return rows.map(toDomain);
         },
 
-        async delete(id) {
+        async delete(id, companyId) {
             try {
-                await prisma.costCenterPlan.delete({ where: { id } });
+                await prisma.costCenterPlan.delete({ where: { id_companyId: { id, companyId } } });
                 return true;
             } catch {
                 return false;

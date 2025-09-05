@@ -12,9 +12,9 @@ export function deleteCostCenterPlanUseCase(
     audit: IAuditlogRepository
 ) {
     return {
-        async execute(id: number, ctx: DeleteContext): Promise<void> {
-            const old = await repo.findById(id);
-            await repo.delete(id);
+        async execute(id: number, companyId: number, ctx: DeleteContext): Promise<void> {
+            const old = await repo.findById(id, companyId);
+            await repo.delete(id, companyId);
 
             await audit.log({
                 userId: ctx.userId,

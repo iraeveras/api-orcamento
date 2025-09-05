@@ -13,9 +13,9 @@ export function updateCostCenterPlanUseCase(
     audit: IAuditlogRepository
 ) {
     return {
-        async execute(id: number, data: Partial<CostCenterPlan>, ctx: UpdateContext): Promise<CostCenterPlan> {
-            const old = await repo.findById(id);
-            const updated = await repo.update(id, data);
+        async execute(id: number, companyId: number, data: Partial<CostCenterPlan>, ctx: UpdateContext): Promise<CostCenterPlan> {
+            const old = await repo.findById(id, companyId);
+            const updated = await repo.update(id, companyId, data);
 
             await audit.log({
                 userId: ctx.userId,

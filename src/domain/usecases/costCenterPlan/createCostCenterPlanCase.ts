@@ -6,7 +6,7 @@ import { CostCenterPlan } from "@/domain/entities/CostCenterPlan";
 interface CreateDTO {
     codPlanoCentroCusto: string;
     nomePlanoCentroCusto: string;
-    companyId: number;
+    companyId: number;                // forçado pelo middleware/controller
     status?: 'active' | 'inactive';
 }
 
@@ -21,12 +21,14 @@ export function createCostCenterPlanUseCase(
 ) {
     return {
         async execute(data: CreateDTO, ctx: CreateContext): Promise<CostCenterPlan> {
-            const plan = await repo.create({
+            const payload: Omit<CostCenterPlan, 'id' | 'createdAt' | 'updatedAt'> = {
                 codPlanoCentroCusto: data.codPlanoCentroCusto,
                 nomePlanoCentroCusto: data.nomePlanoCentroCusto,
                 companyId: data.companyId,
                 status: data.status ?? 'active',
-            });
+            };
+
+            const plan = await repo.create(payload);
 
             await audit.log({
                 userId: ctx.userId,

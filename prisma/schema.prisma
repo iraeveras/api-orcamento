@@ -365,6 +365,8 @@ model CostCenterPlan {
 
   // Evita duplicidade do "código" por empresa
   @@unique([companyId, codPlanoCentroCusto])
+  // Suporte ao escopo por empresa em find/update/delete
+  @@unique([id, companyId])
 }
 
 model CostCenterPlanItem {

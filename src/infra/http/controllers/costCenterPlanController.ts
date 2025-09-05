@@ -12,33 +12,52 @@ const repo = costCenterPlanRepositoryPrisma();
 const audit = auditlogRepositoryPrisma();
 
 export async function createCostCenterPlan(req: Request, res: Response) {
+    if (!req.companyId) {
+        res.status(400).json(apiResponse(null, 'Missing X-Company-Id'));
+        return;
+    }
     const ctx = { userId: req.user?.id || 0, ipAddress: req.ip || '' };
     const usecase = createCostCenterPlanUseCase(repo, audit);
-    const plan = await usecase.execute(req.body, ctx);
+
+    // middleware já garante body.companyId === req.companyId
+    const payload = { ...req.body, companyId: req.companyId };
+
+    const plan = await usecase.execute(payload, ctx);
     res.status(201).json(apiResponse(plan));
 }
 
 export async function updateCostCenterPlan(req: Request, res: Response) {
+    if (!req.companyId) {
+        res.status(400).json(apiResponse(null, 'Missing X-Company-Id'));
+        return;
+    }
     const ctx = { userId: req.user?.id || 0, ipAddress: req.ip || '' };
     const { id } = req.params;
     const usecase = updateCostCenterPlanUseCase(repo, audit);
-    const plan = await usecase.execute(Number(id), req.body, ctx);
+    const plan = await usecase.execute(Number(id), req.companyId, req.body, ctx);
     res.status(200).json(apiResponse(plan));
 }
 
 export async function listCostCenterPlans(req: Request, res: Response) {
+    if (!req.companyId) {
+        res.status(400).json(apiResponse(null, 'Missing X-Company-Id'));
+        return;
+    }
     const usecase = listCostCenterPlanUseCase(repo);
-    const companyId = req.query.companyId ? Number(req.query.companyId) : undefined;
     const status = (req.query.status as "active" | "inactive") || undefined;
     const search = (req.query.search as string) || undefined;
-    const plans = await usecase.execute({ companyId, status, search });
+    const plans = await usecase.execute(req.companyId, { status, search });
     res.status(200).json(apiResponse(plans));
 }
 
 export async function deleteCostCenterPlan(req: Request, res: Response) {
+    if (!req.companyId) {
+        res.status(400).json(apiResponse(null, 'Missing X-Company-Id'));
+        return;
+    }
     const ctx = { userId: req.user?.id || 0, ipAddress: req.ip || '' };
     const { id } = req.params;
     const usecase = deleteCostCenterPlanUseCase(repo, audit);
-    await usecase.execute(Number(id), ctx);
+    await usecase.execute(Number(id), req.companyId, ctx);
     res.status(204).json(apiResponse({ message: 'CostCenterPlan deleted' }));
 }
