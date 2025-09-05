@@ -12,9 +12,9 @@ export function deleteTeamsUseCase(
     auditlogRepository: IAuditlogRepository
 ) {
     return {
-        async execute(id: number, context: DeleteContext): Promise<void> {
-            const old = await teamsRepository.findById(id);
-            await teamsRepository.delete(id);
+        async execute(id: number, companyId: number, context: DeleteContext): Promise<void> {
+            const old = await teamsRepository.findById(id, companyId);
+            await teamsRepository.delete(id, companyId);
 
             await auditlogRepository.log({
                 userId: context.userId,
@@ -25,5 +25,5 @@ export function deleteTeamsUseCase(
                 ipAddress: context.ipAddress,
             });
         }
-    }
+    };
 }

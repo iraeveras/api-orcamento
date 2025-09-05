@@ -7,28 +7,32 @@ export function teamsRepositoryPrisma(): ITeamsRepository {
     return {
         async create(data) {
             const { members, ...teamData } = data;
+
             const created = await prisma.team.create({
                 data: {
                     ...teamData,
-                    members: members && members.length > 0 ? {
-                        create: members.map((employeeId: number) => ({
-                            employee: {connect: { id: employeeId }}
-                        })),
-                    }
-                    : undefined,
+                    members: members && members.length > 0
+                        ? {
+                            create: members.map((employeeId: number) => ({
+                                employee: { connect: { id: employeeId } }
+                            }))
+                        }
+                        : undefined,
                 },
-                include: { members: { include: { employee: true } } }
+                include: { members: true }
             });
+
             return {
                 ...created,
                 members: created.members?.map((m) => m.employeeId)
             };
         },
 
-        async update(id, data) {
+        async update(id, companyId, data) {
             const { members, ...teamData } = data;
+
             const updated = await prisma.team.update({
-                where: { id },
+                where: { id_companyId: { id, companyId } },
                 data: {
                     ...teamData,
                     ...(members
@@ -43,7 +47,7 @@ export function teamsRepositoryPrisma(): ITeamsRepository {
                         : {}
                     ),
                 },
-                include: { members: { include: { employee: true } } }
+                include: { members: true }
             });
 
             return {
@@ -52,18 +56,19 @@ export function teamsRepositoryPrisma(): ITeamsRepository {
             };
         },
 
-        async findById(id) {
+        async findById(id, companyId) {
             const team = await prisma.team.findUnique({
-                where: { id },
-                include: { members: { include: { employee: true } } }
+                where: { id_companyId: { id, companyId } },
+                include: { members: true }
             });
             if (!team) return null;
             return { ...team, members: team.members.map(m => m.employeeId) };
         },
 
-        async list() {
+        async list(companyId) {
             const teams = await prisma.team.findMany({
-                include: { members: { include: { employee: true } } }
+                where: { companyId },
+                include: { members: true }
             });
 
             return teams.map(team => ({
@@ -72,13 +77,13 @@ export function teamsRepositoryPrisma(): ITeamsRepository {
             }));
         },
 
-        async delete(id) {
+        async delete(id, companyId) {
             try {
-                await prisma.team.delete({ where: { id } });
+                await prisma.team.delete({ where: { id_companyId: { id, companyId } } });
                 return true;
             } catch {
                 return false;
             }
         }
-    }
+    };
 }

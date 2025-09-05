@@ -5,7 +5,7 @@ import { Team } from '@/domain/entities/Teams';
 
 interface CreateTeamDTO {
     name: string;
-    companyId: number;
+    companyId: number;     // forçado pelo middleware/controller
     sectorId: number;
     leaderId: number;
     members?: number[];
@@ -23,7 +23,16 @@ export function createTeamsUseCase(
 ) {
     return {
         async execute(data: CreateTeamDTO, context: CreateContext): Promise<Team> {
-            const team = await teamsRepository.create(data);
+            const payload: Omit<Team, 'id' | 'createdAt' | 'updatedAt'> = {
+                name: data.name,
+                companyId: data.companyId,
+                sectorId: data.sectorId,
+                leaderId: data.leaderId,
+                members: data.members ?? [],
+                status: data.status ?? 'active',
+            };
+
+            const team = await teamsRepository.create(payload);
 
             await auditlogRepository.log({
                 userId: context.userId,
@@ -36,5 +45,5 @@ export function createTeamsUseCase(
 
             return team;
         }
-    }
+    };
 }

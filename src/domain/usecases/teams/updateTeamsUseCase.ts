@@ -13,9 +13,9 @@ export function updateTeamsUseCase(
     auditlogRepository: IAuditlogRepository
 ) {
     return {
-        async execute(id: number, data: Partial<Team>, context: UpdateContext): Promise<Team> {
-            const old = await teamsRepository.findById(id);
-            const updated = await teamsRepository.update(id, data);
+        async execute(id: number, companyId: number, data: Partial<Team>, context: UpdateContext): Promise<Team> {
+            const old = await teamsRepository.findById(id, companyId);
+            const updated = await teamsRepository.update(id, companyId, data);
 
             await auditlogRepository.log({
                 userId: context.userId,
@@ -29,5 +29,5 @@ export function updateTeamsUseCase(
 
             return updated;
         }
-    }
+    };
 }
