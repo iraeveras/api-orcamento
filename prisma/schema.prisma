@@ -149,6 +149,9 @@ model Sector {
   status       String       @default("active")
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+
+  // Permite where composto (id, companyId) no Prisma Client
+  @@unique([id, companyId])
 }
 
 model CostCenter {
