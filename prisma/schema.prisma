@@ -130,6 +130,9 @@ model Department {
   status      String       @default("active")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  // Único composto para permitir where por (id, companyId)
+  @@unique([id, companyId])
 }
 
 model Sector {

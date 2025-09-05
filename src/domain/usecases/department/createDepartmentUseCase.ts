@@ -1,3 +1,4 @@
+// FILE: src/domain/usecases/department/createDepartmentUseCase.ts
 import { IDepartmentRepository } from '@/domain/repositories/departmentRepository';
 import { IAuditlogRepository } from '@/domain/repositories/auditlogRepository';
 import { Department } from '@/domain/entities/Department';
@@ -19,12 +20,9 @@ export function createDepartmentUseCase(
 ) {
     return {
         async execute(data: CreateDepartmentDTO, context: CreateContext): Promise<Department> {
-
-            const payload = {
-                ...data,
-                status: data.status ?? 'active'
-            }
+            const payload = { ...data, status: data.status ?? 'active' };
             const department = await departmentRepository.create(payload);
+
             await auditlogRepository.log({
                 userId: context.userId,
                 action: 'create',
@@ -33,7 +31,8 @@ export function createDepartmentUseCase(
                 newData: department,
                 ipAddress: context.ipAddress,
             });
+
             return department;
-        }
+        },
     };
 }
